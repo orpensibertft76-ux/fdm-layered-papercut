@@ -1,0 +1,8 @@
+numpy>=2
+opencv-python
+Pillow
+scipy
+scikit-image
+shapely>=2.1
+trimesh
+manifold3d

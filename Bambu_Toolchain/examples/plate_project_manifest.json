@@ -1,0 +1,14 @@
+{
+  "project_root": ".",
+  "template_3mf": "template.3mf",
+  "expected_printer_model": "Bambu Lab P1S",
+  "expected_nozzle_mm": 0.4,
+  "parts": [
+    {"id": "part-1", "file": "part-1.stl", "quantity": 1}
+  ],
+  "plates": [
+    {"name": "Plate 1", "items": [
+      {"part": "part-1", "name": "Part 1", "center_mm": [128, 128]}
+    ]}
+  ]
+}
