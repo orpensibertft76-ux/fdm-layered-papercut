@@ -11,4 +11,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/check_publication.py
-      - run: python -m compileall -q pipeline Bambu_Toolchain
+      - run: python -m compileall -q pipeline Bambu_Toolchain hardware

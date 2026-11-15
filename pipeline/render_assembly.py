@@ -11,12 +11,15 @@ bpy.ops.import_scene.gltf(filepath=str(check / "装配.glb"))
 pieces = [obj for obj in scene.objects if obj.type == 'MESH']
 assert len(pieces) == 8
 tray = next(obj for obj in pieces if "托框" in obj.name)
-factor = 192.8 / max(tray.dimensions)
+import json
+verified = json.loads((check/"verification.json").read_text(encoding="utf8"))
+tray_width = 192.8 if len(verified["plates"]) == 8 else 194.0
+factor = tray_width / max(tray.dimensions)
 for obj in pieces:
     obj.matrix_world = Matrix.Scale(factor, 4) @ obj.matrix_world
     obj.name = "GEN_" + obj.name
 bpy.context.view_layer.update()
-assert abs(max(tray.dimensions)-192.8) < .01
+assert abs(max(tray.dimensions)-tray_width) < .01
 scene.unit_settings.system = 'METRIC'
 scene.unit_settings.scale_length = .001
 scene.unit_settings.length_unit = 'MILLIMETERS'

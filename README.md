@@ -1,40 +1,40 @@
-# FDM 分层剪纸
+# FDM 分层剪纸生产流程
 
-从一张参考图生成一套可拿起、装盒叠合的单色剪纸片。仓库提供已切片的鸡和龙成品，以及可用同一流程生成新款的任务模板。
+输入「十二星座」「梅兰竹菊」这样的主题，生成原设计和可生产分色稿，再由程序转换成可装框的单色整片。AI 的执行顺序和验收条件见 [AGENTS.md](AGENTS.md)。
 
-[鸡款逐片叠合与原设计](examples/rooster/expected/鸡_逐片切片叠合与原设计.png) · [鸡款装盒渲染](examples/rooster/expected/鸡_装盒斜视.png) · [鸡款已切片 3MF](examples/rooster/expected/鸡_八盘_已切片可编辑.3mf) · [龙款成品](examples/dragon)
+## 安装技能
 
-![鸡款逐片切片叠合与原设计](examples/rooster/expected/鸡_逐片切片叠合与原设计.png)
+复制整个 `skills/fdm-layered-papercut/` 到 Codex 的个人技能目录或项目技能目录。要运行下方切片流程，请克隆整个仓库。
 
-## 安装 Skill
+## 先复跑已知样板
 
-把 [skills/fdm-layered-papercut](skills/fdm-layered-papercut/) 整个目录复制到 Codex 的个人技能目录 `~/.agents/skills/`，Windows 上为 `%USERPROFILE%\.agents\skills\`。也可复制到项目的 `.agents/skills/`。要执行下面的管线，请克隆整个仓库，并从仓库根目录运行命令。
-
-## 先复跑鸡款
-
-已附鸡款参考图、实际生图输出和配置，直接从保存的生图输出复跑。Windows 安装 Python 和 Bambu Studio，预览另需 Blender。当前工艺按 P1S／0.4 mm／PLA，180 mm 画口、六张 1.2 mm 色片、一件一盘。
+Windows 安装 Python、Bambu Studio（已验证 02.08.02.61）。装盒渲染使用 Blender 5.2。安装 Python 依赖后，从带齐两张图和任务配置的样板运行。支持 `--bambu <exe>` 和 `--blender <exe>`，每次使用新目录。
 
 ```powershell
 python -m pip install -r requirements.txt
-python pipeline/run.py examples/rooster --out runs/rooster-001
+python pipeline/run.py examples/rooster --out runs/rooster-review --review-only
+python pipeline/run.py examples/rooster --out runs/rooster-core
 ```
 
-Bambu Studio 路径不同时传 `--bambu <exe>`。需要装盒斜视时传 `--blender <exe>`。每次用新的输出目录。程序依次生成遮罩和网格、原生回读、实际切片、核验与逐片叠合。
+默认是一款六盘的独立画芯。要重新生成旧版八盘鸡款示例时加 `--legacy-box`。新款使用独立的 [019 盒体](hardware/box/expected)，可与画芯同时试制。六色各一张，外宽 186 mm、厚 1.2 mm，画口 180 mm。当前设备配置为 P1S／0.4 mm／PLA。019 盒体为六处燕尾两丝样件，短试件的配合已有实测，完整盒的配合待验证。
 
-## 裂变新款
+## 从新主题跑两轮生图
 
-1. 复制 [鸡款任务](examples/rooster)到 `jobs/新款/`，使用 `reference.png`、`art.png` 和 `job.json` 三个输入。将参考图换为用户认可的设计。
-2. 按[生图交接规范](docs/IMAGE_INPUT.md)，调用支持参考图编辑的生图工具，将参考图与填写后的提示词一起传入。原图保存为 `reference.png`，选中输出保存为 `art.png`。
-3. 填写 `job.json` 的款名、两张图各自的画口裁切坐标、从背向前六色及色片名。前片依据纹样连续性、接框条件和遮筋覆盖选定。将前片色放在色表末位，程序会用它清理裁切边缘。
-4. 执行 `python pipeline/run.py jobs/新款 --out runs/新款-001`。查看正视、斜视及逐片切片图，发现露筋、失真或明显串色时回到对应的图稿、层序或开孔修改，再用新编号复跑。
+1. **主题 → 原设计**。先写主体数量、轮廓、部位配色、留白和装饰密度。用 [祥羊设计](examples/sheep/reference.png) 或已验收的同系列正视图作为风格参考，附给 AI 的生图工具。看过并确认主体和风格后，把选定图保存为 `reference.png`。这里有[真实十二生肖第一轮提示词和生图结果](examples/series)。
+2. **原设计 → 生产分色图**。把选定的 `reference.png` 真实传给图像编辑模型，按[两轮生图规范](IMAGE_INPUT.md)和各部位配色约束做第二轮。保留姿态、构图和纹样，把生成结果保存为 `art.png`。鸡、龙附实际用过的第二轮提示词。图像生成由克隆者的工具完成，PNG 是和本地程序的交接文件。
+3. **预审 → 分片 → 切片**。拷贝一个 `job.json`，填写两图画口坐标和背到前的色序。先用 `--review-only` 生成原设计、生图、固定六色、分片正视四图及斜视和颜色统计。面积小且散的色片优先靠后，面积大、连续且遮筋有效的色片靠前。金边留画芯，外框由盒体提供。默认整片开孔，充分留料。四图对照通过后用新目录正式运行。超过 3% 正视遮罩偏离会拦截，低于阈值仍要看图确认。
+4. **装盒和交付**。每款给原图、生产稿、独立可编辑已切片 3MF、逐片挤出路径累加与原稿对照。传入 Blender 路径时，生成线下装配渲染；模型为本轮画芯与独立盒体的组合。标注剩余露筋、细孔与实物验证状态。试配件、外壳和画芯各自使用自己的项目。
 
-## 交付
+## 可核对的成品
 
-- `output/已切片可编辑.3mf` 是最终工程，六张色片、托框、压边各一盘。
-- `evidence/逐片切片叠合与原设计.png` 按实际装配顺序逐片累加，最终图旁放同画口的原设计。
-- `evidence/正斜视.png`、实际遮罩和两份核验 JSON 用于检查。传入 Blender 时另生成 `装盒斜视.png`。
-- 交付时列出未解决的可见接点、细孔失真和实物验证状态。实物打印由使用者决定。
+- [祥羊原设计、装盒渲染与历史工程](examples/sheep)
+- [龙画芯](examples/dragon)、[蛇画芯](examples/snake)、[马画芯](examples/horse)
+- [鸡款原图、提示词、任务输入、分片与已切片样板](examples/rooster)
+- [九档带刻痕试件与 019 整盒](hardware/README.md)
+- [拓竹命令行工具](Bambu_Toolchain/README.md)和[可安装技能](skills/fdm-layered-papercut/SKILL.md)
 
-其他 AI 从 [AGENTS.md](AGENTS.md) 开始。当前入口采用可复跑的鸡款样板。
+试打由使用者发起。公开案例使用设计图和数字渲染。本地日志、用户设置、凭据及缓存留在本机。
 
-**贡献者**　小文不闻
+## 许可
+
+本仓库的工作流代码与文档采用 MIT 许可。参考素材和装配渲染用于复跑与案例对照，权利归原作者。拓竹软件和生图模型按各自许可使用。

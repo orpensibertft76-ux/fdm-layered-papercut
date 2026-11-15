@@ -21,7 +21,7 @@ EXE=Path(os.environ["PAPERCUT_BAMBU"])
 with (WORK/'print_meshes.pkl').open('rb') as f:
     source=pickle.load(f)
 PNAMES=[n for n,_ in source]
-assert len(PNAMES)==8
+assert len(PNAMES) in (6,8)
 N=len(COLORS)
 P='{'+PROD+'}'
 

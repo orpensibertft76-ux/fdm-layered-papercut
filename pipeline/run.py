@@ -13,6 +13,9 @@ parser.add_argument("job", type=Path)
 parser.add_argument("--out", required=True, type=Path)
 parser.add_argument("--bambu", type=Path, default=Path("C:/Program Files/Bambu Studio/bambu-studio.exe"))
 parser.add_argument("--blender", type=Path)
+parser.add_argument("--legacy-box", action="store_true", help="Include the older 192.8-mm demonstration box.")
+parser.add_argument("--review-only", action="store_true",
+                    help="Generate the artwork and mask review without building or slicing.")
 args = parser.parse_args()
 job = args.job.resolve()
 out = args.out.resolve()
@@ -30,7 +33,7 @@ if (len(config["layers"]) != 6 or len(config["palette"]) != 6 or
     len(set(config["palette"])) != 6 or not all(re.fullmatch(r"#[0-9A-F]{6}", c) for c in config["palette"]) or
     not all(isinstance(n,str) and n.strip() and not re.search(r'[<>:"/\\|?*]',n) for n in config["layers"])):
     parser.error("Provide six unique uppercase hex colors and six valid layer names, ordered back to front.")
-if not args.bambu.is_file() or (args.blender and not args.blender.is_file()):
+if not args.review_only and (not args.bambu.is_file() or (args.blender and not args.blender.is_file())):
     parser.error("Provide an installed Bambu Studio and optional Blender executable.")
 out.mkdir(parents=True)
 evidence = out/"evidence"
@@ -39,10 +42,15 @@ for file, name in (("job.json","job.json"),("art.png","生图.png"),("reference.
     shutil.copyfile(job/file,out/name)
 (out/"crop.json").write_text(json.dumps(config["art_crop"]))
 env = dict(os.environ,PAPERCUT_WORK=str(out),PAPERCUT_BAMBU=str(args.bambu.resolve()))
+env["PAPERCUT_LEGACY_BOX"] = "1" if args.legacy_box else "0"
+if args.review_only:
+    env["PAPERCUT_REVIEW_ONLY"] = "1"
 def run(*command):
     subprocess.run(command,env=env,stdin=subprocess.DEVNULL,check=True)
-for script in ("build_dragon.py","package_dragon.py"):
-    run(sys.executable,str(pipeline/script))
+run(sys.executable,str(pipeline/"build_dragon.py"))
+if args.review_only:
+    sys.exit(0)
+run(sys.executable,str(pipeline/"package_dragon.py"))
 cache = Path(os.environ["LOCALAPPDATA"])/"BambuAIToolchain"
 cache.mkdir(exist_ok=True)
 stage = Path(tempfile.mkdtemp(prefix="papercut_",dir=cache))

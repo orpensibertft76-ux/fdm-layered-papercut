@@ -1,0 +1,133 @@
+{
+  "status": "plates_sliced_and_checked",
+  "plates": [
+    {
+      "plate": 1,
+      "filament": 1,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        1143,
+        1390,
+        1390,
+        1390,
+        1390,
+        699
+      ],
+      "print_time": "1h 44m 44s",
+      "grams": 51.36,
+      "support": false,
+      "predicted_seconds": 6284,
+      "top_core_uncovered_percent": 1.0754494739276217,
+      "top_route_components": 1
+    },
+    {
+      "plate": 2,
+      "filament": 2,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        38621,
+        46176,
+        46465,
+        46176,
+        46448,
+        27914
+      ],
+      "print_time": "2h 6m 33s",
+      "grams": 39.55,
+      "support": false,
+      "predicted_seconds": 7593,
+      "top_core_uncovered_percent": 8.596892791254566,
+      "top_route_components": 1
+    },
+    {
+      "plate": 3,
+      "filament": 3,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        32744,
+        39344,
+        39665,
+        39345,
+        39657,
+        23747
+      ],
+      "print_time": "1h 52m 15s",
+      "grams": 35.74,
+      "support": false,
+      "predicted_seconds": 6735,
+      "top_core_uncovered_percent": 8.299955237502834,
+      "top_route_components": 1
+    },
+    {
+      "plate": 4,
+      "filament": 4,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        37138,
+        45318,
+        45715,
+        45318,
+        45709,
+        28554
+      ],
+      "print_time": "1h 45m 57s",
+      "grams": 29.49,
+      "support": false,
+      "predicted_seconds": 6357,
+      "top_core_uncovered_percent": 11.394920403812298,
+      "top_route_components": 1
+    },
+    {
+      "plate": 5,
+      "filament": 5,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        36507,
+        44477,
+        44818,
+        44471,
+        44812,
+        27892
+      ],
+      "print_time": "1h 42m 32s",
+      "grams": 28.29,
+      "support": false,
+      "predicted_seconds": 6152,
+      "top_core_uncovered_percent": 11.838788972555852,
+      "top_route_components": 1
+    },
+    {
+      "plate": 6,
+      "filament": 6,
+      "layers": 6,
+      "extrusion_segments_per_layer": [
+        42915,
+        55497,
+        55456,
+        55494,
+        55444,
+        37615
+      ],
+      "print_time": "1h 36m 46s",
+      "grams": 21.0,
+      "support": false,
+      "predicted_seconds": 5806,
+      "top_core_uncovered_percent": 19.482500820558954,
+      "top_route_components": 1
+    }
+  ],
+  "override_mismatches": {},
+  "mesh_resources_byte_identical": {
+    "3D/3dmodel.model": false,
+    "3D/Objects/object_1.model": true,
+    "3D/Objects/object_3.model": true,
+    "3D/Objects/object_5.model": true,
+    "3D/Objects/object_4.model": true,
+    "3D/Objects/object_2.model": true,
+    "3D/Objects/object_6.model": true
+  },
+  "total_grams": 205.43,
+  "sliced_geometry_and_pose_match": true,
+  "total_predicted_seconds": 38927,
+  "physical_print": false
+}

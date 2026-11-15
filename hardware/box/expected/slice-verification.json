@@ -1,0 +1,18 @@
+{
+  "plates": [
+    {
+      "plate": 1,
+      "grams": 99.77,
+      "seconds": 7188,
+      "height_mm": 10.0
+    },
+    {
+      "plate": 2,
+      "grams": 25.22,
+      "seconds": 2798,
+      "height_mm": 6.8
+    }
+  ],
+  "override_mismatch": [],
+  "geometry_and_pose_match": true
+}

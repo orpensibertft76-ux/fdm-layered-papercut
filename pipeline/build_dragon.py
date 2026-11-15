@@ -251,10 +251,42 @@ def main():
     final_masks = stacks[selected]
     final = composite(final_masks)
     png(CHECK/"最终正视.png",final[RIM:-RIM,RIM:-RIM])
+    reference = Image.open(WORK/"reference.png").convert("RGB").crop(JOB["reference_crop"])
+    art = Image.open(WORK/"生图.png").convert("RGB").crop(JOB["art_crop"])
+    comparison = Image.new("RGB", (1664, 448), "#fff5e5")
+    caption = ImageDraw.Draw(comparison)
+    proof = (("原设计", reference), ("生图输出", art),
+             ("固定六色源稿", Image.fromarray(PALETTE[target[region]])),
+             ("分片正视", Image.fromarray(PALETTE[final[region]])))
+    for col, (name, image) in enumerate(proof):
+        x = 8 + 416 * col
+        caption.text((x, 7), name, font=font, fill="black")
+        comparison.paste(image.resize((400,400),Image.Resampling.LANCZOS),(x,36))
+    comparison.save(CHECK/"开跑前四图对照.png")
+    changed = metrics[selected]["front_changed_percent"]
+    metrics.update(selected=selected, passes_front_drift_check=changed <= 3.0)
+    report = CHECK/"结构对比.json"
+    visible = []
+    for i,name in enumerate(NAMES):
+        mask = (target[region] == i).astype(np.uint8)
+        _, _, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=4)
+        areas = stats[1:, cv2.CC_STAT_AREA]
+        visible.append(dict(layer=name, percent=float(mask.mean()*100),
+                            regions=len(areas), largest_share=float(areas.max()/areas.sum()) if len(areas) else 0,
+                            edge_pixels=int(mask[0].sum()+mask[-1].sum()+mask[1:-1,0].sum()+mask[1:-1,-1].sum())))
+    metrics["visible_colors"] = visible
+    report.write_text(json.dumps(metrics,ensure_ascii=False,indent=2),encoding="utf8")
+    if os.environ.get("PAPERCUT_REVIEW_ONLY") == "1":
+        print(f"Front drift: {changed:.2f}% (limit 3%). Review: {comparison.size}")
+        return
+    if changed > 3.0:
+        raise SystemExit(f"Front drift {changed:.2f}% exceeds 3%. Review artwork and visible connections before slicing.")
     Image.fromarray((~np.any(final_masks,axis=0)).astype(np.uint8)*255).save(CHECK/"真通孔.png")
     items = [(f"{i+1:02d}_{name}",[(i,layer_mesh(final_masks[i]),name)]) for i,name in enumerate(NAMES)]
-    tray,cover = frame_parts()
-    items.extend([("07_红色托框",[(2,tray,"托框")]),("08_红色压边",[(2,cover,"压边")])])
+    legacy_box = os.environ.get("PAPERCUT_LEGACY_BOX") == "1"
+    if legacy_box:
+        tray,cover = frame_parts()
+        items.extend([("07_红色托框",[(2,tray,"托框")]),("08_红色压边",[(2,cover,"压边")])])
     info = []
     for name,parts in items:
         color,mesh,_ = parts[0]
@@ -264,7 +296,8 @@ def main():
                          boundary_edges=int((edges==1).sum()),non_manifold_edges=int((edges!=2).sum()),
                          signed_volume_mm3=mesh.volume,solid_components=1))
     metrics.update(selected=selected,mesh=info,true_through_pixels=0,cavity_xy_clearance_per_side_mm=.3,
-                   axial_clearance_mm=.1,assembly_offsets_z_mm=[1.6+i*1.2 for i in range(6)]+[0,8.9])
+                   assembly_offsets_z_mm=([1.6+i*1.2 for i in range(6)]+[0,8.9] if legacy_box
+                                          else [2.4+i*1.2 for i in range(6)]))
     (CHECK/"结构对比.json").write_text(json.dumps(metrics,ensure_ascii=False,indent=2),encoding="utf8")
     with (WORK/"print_meshes.pkl").open("wb") as f:
         pickle.dump(items,f)

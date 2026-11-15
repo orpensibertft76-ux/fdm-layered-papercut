@@ -1,0 +1,74 @@
+[
+  {
+    "part": "s1A",
+    "grooves_detected": 1
+  },
+  {
+    "part": "s1B",
+    "grooves_detected": 1
+  },
+  {
+    "part": "s2A",
+    "grooves_detected": 2
+  },
+  {
+    "part": "s2B",
+    "grooves_detected": 2
+  },
+  {
+    "part": "s3A",
+    "grooves_detected": 3
+  },
+  {
+    "part": "s3B",
+    "grooves_detected": 3
+  },
+  {
+    "part": "s4A",
+    "grooves_detected": 4
+  },
+  {
+    "part": "s4B",
+    "grooves_detected": 4
+  },
+  {
+    "part": "s5A",
+    "grooves_detected": 5
+  },
+  {
+    "part": "s5B",
+    "grooves_detected": 5
+  },
+  {
+    "part": "s6A",
+    "grooves_detected": 6
+  },
+  {
+    "part": "s6B",
+    "grooves_detected": 6
+  },
+  {
+    "part": "s7A",
+    "grooves_detected": 7
+  },
+  {
+    "part": "s7B",
+    "grooves_detected": 7
+  },
+  {
+    "part": "s8A",
+    "grooves_detected": 8
+  },
+  {
+    "part": "s8B",
+    "grooves_detected": 8
+  },
+  {
+    "part": "s9A",
+    "grooves_detected": 9
+  },
+  {
+    "part": "s9B",
+    "grooves_detected": 9
+  }
+]

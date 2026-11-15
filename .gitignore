@@ -18,3 +18,14 @@ prepare_snapshot.py
 
 /runs/
 /jobs/
+
+
+/collect.py
+/hardware/*/原生回读/
+/hardware/*/plates.json
+
+
+/repair_names.py
+/repair_duplicates.py
+
+/examples/sheep/实物配色_*.png

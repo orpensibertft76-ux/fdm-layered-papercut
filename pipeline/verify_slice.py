@@ -76,9 +76,9 @@ def main():
         mismatch = {k:[expected.get(k),actual.get(k)] for k in keys if expected.get(k)!=actual.get(k)}
         assert not mismatch,mismatch
         gcode = sorted(n for n in z.namelist() if re.fullmatch(r"Metadata/plate_\d+\.gcode",n))
-        assert len(gcode) == 8
+        assert len(gcode) == len(source)
         plate_data = ET.fromstring(z.read("Metadata/slice_info.config")).findall("plate")
-        assert len(plate_data) == 8
+        assert len(plate_data) == len(source)
         for i,path in enumerate(gcode):
             text = z.read(path).decode("utf8")
             def value(pattern):
@@ -137,7 +137,7 @@ def main():
                 ]
             return signature
         assert geometry_and_pose(u) == geometry_and_pose(z)
-    preview.save(CHECK/"八盘实际挤出路径.png")
+    preview.save(CHECK/"各盘实际挤出路径.png")
     levels = np.zeros((744,744),np.uint8)
     for i,route in enumerate(tops):
         levels[route]=i
@@ -155,8 +155,16 @@ def main():
         mesh.apply_translation([0,0,off])
         mesh.visual.face_colors = [*PALETTE[color],255]
         scene.add_geometry(mesh,node_name=name,geom_name=name)
+    if len(source) == 6:
+        hardware = Path(__file__).resolve().parents[1]/"hardware"/"box"/"expected"
+        for name,file in (("07_红色托框","tray.stl"),("08_红色盖框","lid.stl")):
+            shell = trimesh.load_mesh(hardware/file)
+            if file == "lid.stl":
+                shell.apply_transform(np.array([[1,0,0,0],[0,-1,0,0],[0,0,-1,11.8],[0,0,0,1]]))
+            shell.visual.face_colors = [188,18,25,255]
+            scene.add_geometry(shell,node_name=name,geom_name=name)
     (CHECK/"装配.glb").write_bytes(scene.export(file_type="glb"))
-    report = dict(status="eight_plates_sliced_and_checked",plates=result,override_mismatches=mismatch,
+    report = dict(status="plates_sliced_and_checked",plates=result,override_mismatches=mismatch,
                   mesh_resources_byte_identical=resource_equal,total_grams=round(sum(r["grams"] for r in result),2),
                   sliced_geometry_and_pose_match=True,
                   total_predicted_seconds=sum(r["predicted_seconds"] for r in result),

@@ -31,12 +31,12 @@ python Bambu_Toolchain/plate_project.py --manifest 'Projects/项目名/工作文
 ## 可用操作
 
 ```powershell
-python Bambu_Toolchain/bambu.py doctor
-python Bambu_Toolchain/bambu.py inspect 'C:\完整路径\模型.gcode.3mf'
-python Bambu_Toolchain/bambu.py prepare --model 'C:\完整路径\模型.stl' --settings-from 'C:\完整路径\原切片.gcode.3mf' --overrides 'C:\完整路径\参数.json' --regions 'C:\完整路径\支撑区域.json' --out 'C:\完整路径\新任务目录'
-python Bambu_Toolchain/bambu.py slice --job 'C:\完整路径\新任务目录' --out 'C:\完整路径\新结果目录'
-python Bambu_Toolchain/bambu.py slice --job 'C:\完整路径\新任务目录' --out 'C:\完整路径\直接打印结果目录' --print-file
-python Bambu_Toolchain/bambu.py compare 'C:\完整路径\原切片.gcode.3mf' 'C:\完整路径\新结果目录\result.3mf' --out 'C:\完整路径\对比.json'
+.\Bambu_Toolchain\run-bambu.ps1 doctor
+.\Bambu_Toolchain\run-bambu.ps1 inspect 'C:\完整路径\模型.gcode.3mf'
+.\Bambu_Toolchain\run-bambu.ps1 prepare --model 'C:\完整路径\模型.stl' --settings-from 'C:\完整路径\原切片.gcode.3mf' --overrides 'C:\完整路径\参数.json' --regions 'C:\完整路径\支撑区域.json' --out 'C:\完整路径\新任务目录'
+.\Bambu_Toolchain\run-bambu.ps1 slice --job 'C:\完整路径\新任务目录' --out 'C:\完整路径\新结果目录'
+.\Bambu_Toolchain\run-bambu.ps1 slice --job 'C:\完整路径\新任务目录' --out 'C:\完整路径\直接打印结果目录' --print-file
+.\Bambu_Toolchain\run-bambu.ps1 compare 'C:\完整路径\原切片.gcode.3mf' 'C:\完整路径\新结果目录\result.3mf' --out 'C:\完整路径\对比.json'
 ```
 
 `--regions` 和 `--settings-from` 均可省略。默认配置是本机的 P1S 0.4、0.20mm Standard、Bambu PLA Basic；其他打印机使用 `--machine`、`--process`、`--filament` 指定已安装的完整配置名称。默认打印板为纹理 PEI，有参考工程时使用其中的打印板类型。只接受工艺配置字段作为 overrides，不接受打印机脚本或硬件参数混入工艺覆盖。
